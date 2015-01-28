@@ -1,26 +1,19 @@
-## start with the import 
+# Using Series and DataFrame from pandas; shorthand for pandas and numpy
 from pandas import Series, DataFrame
 import pandas as pd
 import numpy as np
 
-# SET UP FILES -----------------------------------------------------------------------
-## create a main directory link and a subpath to file
-## NOTE: anything in quotes `" "` is a data type called a 'string'. You should
-## ALWAYS make file paths into strings to avoid parsing errors.
+#Setting up the file path (quotations marks are important especially because there are spaces in my path
+
 main_dir = "/Users/Vivian/MPP Fall 2014 & Spring 2015/Big Data/GitHub/PUBPOL590"
 txt_file = "/Assignment1/data/File1_small.txt"
 
-# IMPORT DATA ------------------------------------------------------------------------
-## We can import most raw data using the following functions:
-# pd.read_csv() -- read .csv values
-# pd.read_txt() -- read any 'table' like data, like tab-delimited .txt files
-# pd.read_excel() -- read .xls files
-
-## create a dataframe, df, by importing data using panda
+# First step: import the data from github
+## Then create a dataframe, df, by importing data using panda
+# Don't forget to indicate that it's spaced delimited
 pd.read_table(main_dir + txt_file, sep = " ")
 
-## we can assign any object to a variable using the equals sign `=`
-df = pd.read_table(main_dir + txt_file, sep = " ") # need to use 'pd.' before using any pandas function
+df = pd.read_table(main_dir + txt_file, sep = " ") 
 
 list(df) # this tells you the column name
 
