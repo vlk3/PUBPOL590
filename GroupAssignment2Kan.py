@@ -13,7 +13,11 @@ root = main_dir + "Group Assignment/"
 paths = [os.path.join(root, v) for v in os.listdir(root) if v.startswith("File")]
 
 # IMPORT AND STACK--------------------
-df = pd.concat([pd.read_table(v, skiprows = 6000000, nrows = 1500000, sep = " ", names = ['ID', 'DAYHH', 'kwh'], header=0, parse_dates=[2]) for v in paths], ignore_index = True)
+df = pd.concat([pd.read_table(v, skiprows = 6000000, nrows = 1500000, sep = " ", names = ['ID', 'DAYHH', 'kwh']) for v in paths], ignore_index = True)
+#df.convert_objects(convert_numeric=True)
+#df.convert_objects(convert_numeric=True).dtypes
+
+
 df_allocation = pd.read_csv(root + "SME and Residential allocations.csv",usecols = ['ID','Code','Residential - Tariff allocation','Residential - stimulus allocation'],na_values = ['-', 'NA', 'NULL', '', '.'])
 df2 = df_allocation.rename(columns = {'Residential - Tariff allocation':'RES_Tariff','Residential - stimulus allocation':'RES_Stimulus'})
 
@@ -41,18 +45,18 @@ df3 = pd.merge(df, df_correction, on= ['hour_cer','day_cer'])
 
 
 # DAILY AGGREGATION --------------------
-grp = df3.groupby(['ID','day_cer','Code', 'RES_Tariff', 'RES_Stimulus'])
+grp = df3.groupby(['ID','day_cer', 'RES_Stimulus'])
 agg = grp['kwh'].sum()
-#grp.sum() 
+grp.sum() 
 
 # reset the index (multilevel at the moment)
 agg = agg.reset_index() # drop the multi-index
-grp1 = agg.groupby(['day_cer', 'Code', 'RES_Tariff', 'RES_Stimulus']) 
+grp1 = agg.groupby(['day_cer','RES_Stimulus']) 
 #agg.head() to look at first five rows
 
 ## split up treatment/control
-trt = {(k[0], k[1], k[2]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[3] == '1'} # get set of all treatments by date
-ctrl = {(k[0], k[1], k[2]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[3] == 'E'} # get set of all controls by date
+trt = {(k[0]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[1] == '1'} # get set of all treatments by date
+ctrl = {(k[0]]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[1] == 'E'} # get set of all controls by date
 keys = ctrl.keys()
 
 # tstats and pvals
