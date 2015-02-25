@@ -45,21 +45,22 @@ df3 = pd.merge(df, df_correction, on= ['hour_cer','day_cer'])
 
 
 # DAILY AGGREGATION --------------------
-grp = df3.groupby(['ID','day_cer', 'RES_Stimulus'])
+grp = df3.groupby(['ID','day_cer', 'RES_Stimulus']) #this helps agg the kwh consumption for every HH
 agg = grp['kwh'].sum()
 grp.sum() 
 
 # reset the index (multilevel at the moment)
 agg = agg.reset_index() # drop the multi-index
-grp1 = agg.groupby(['day_cer','RES_Stimulus']) 
+grp1 = agg.groupby(['day_cer','RES_Stimulus']) #reducing the amount of groups and increasing thel list size; we are distinguishing them by assignemtn, not HH
 #agg.head() to look at first five rows
 
 ## split up treatment/control
 trt = {(k[0]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[1] == '1'} # get set of all treatments by date
-ctrl = {(k[0]]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[1] == 'E'} # get set of all controls by date
+ctrl = {(k[0]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[1] == 'E'} # get set of all controls by date
 keys = ctrl.keys()
 
 # tstats and pvals
-tstats = DataFrame([(k, np.abs(float(ttest_ind(trt[k], ctrl[k], equal_var=False)[0]))) for k in keys], columns=['ymd', 'tstat'])
-pvals = DataFrame([(k, (ttest_ind(trt[k], ctrl[k], equal_var=False)[1])) for k in keys], columns=['ymd', 'pval'])
+tstats = DataFrame([(k, np.abs(float(ttest_ind(trt[k], ctrl[k], equal_var=False)[0]))) for k in keys], columns=['day_cer', 'tstat'])
+pvals = DataFrame([(k, (ttest_ind(trt[k], ctrl[k], equal_var=False)[1])) for k in keys], columns=['day_cer', 'pval'])
 t_p = pd.merge(tstats, pvals)
+
