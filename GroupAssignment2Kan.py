@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+from scipy.stats import ttest_ind
 
 main_dir = "/Users/Vivian/Desktop/Data/" 
 root = main_dir + "Group Assignment/"
@@ -51,7 +52,7 @@ grp1 = agg.groupby(['day_cer', 'Code', 'RES_Tariff', 'RES_Stimulus'])
 
 ## split up treatment/control
 trt = {(k[0], k[1], k[2]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[3] == '1'} # get set of all treatments by date
-ctrl = {(k[0], k[1], k[2]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[1] == 'E'} # get set of all controls by date
+ctrl = {(k[0], k[1], k[2]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[3] == 'E'} # get set of all controls by date
 keys = ctrl.keys()
 
 # tstats and pvals
