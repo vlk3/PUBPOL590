@@ -14,10 +14,6 @@ paths = [os.path.join(root, v) for v in os.listdir(root) if v.startswith("File")
 
 # IMPORT AND STACK--------------------
 df = pd.concat([pd.read_table(v, skiprows = 6000000, nrows = 1500000, sep = " ", names = ['ID', 'DAYHH', 'kwh']) for v in paths], ignore_index = True)
-#df.convert_objects(convert_numeric=True)
-#df.convert_objects(convert_numeric=True).dtypes
-
-
 df_allocation = pd.read_csv(root + "SME and Residential allocations.csv",usecols = ['ID','Code','Residential - Tariff allocation','Residential - stimulus allocation'],na_values = ['-', 'NA', 'NULL', '', '.'])
 df2 = df_allocation.rename(columns = {'Residential - Tariff allocation':'RES_Tariff','Residential - stimulus allocation':'RES_Stimulus'})
 
@@ -64,3 +60,54 @@ tstats = DataFrame([(k, np.abs(float(ttest_ind(trt[k], ctrl[k], equal_var=False)
 pvals = DataFrame([(k, (ttest_ind(trt[k], ctrl[k], equal_var=False)[1])) for k in keys], columns=['day_cer', 'pval'])
 t_p = pd.merge(tstats, pvals)
 
+
+#Plotting!
+fig1 = plt.figure() # initialize plot
+ax1 = fig1.add_subplot(2,1,1) # two rows, one column, first plot
+ax1.plot(t_p['day_cer'],t_p['tstat'])
+ax1.axhline(2, color='r', linestyle='--')
+ax1.axvline(14, color='g', linestyle='--')
+ax1.set_title('t-stats over-time (daily)')
+
+ax2 = fig1.add_subplot(2,1,2) # two rows, one column, first plot
+ax2.plot(t_p['day_cer'], t_p['pval'])
+ax2.axhline(0.05, color='r', linestyle='--')
+ax2.axvline(14, color='g', linestyle='--')
+ax2.set_title('p-values over-time')
+plt.show()
+
+# MONTHLY AGGREGATION 
+grp = df3.groupby(['ID','year','month', 'RES_Stimulus']) ## Dan said to group by year and month
+agg = grp['kwh'].sum()
+grp.sum() 
+
+# reset the index (multilevel at the moment)
+agg = agg.reset_index() # drop the multi-index
+grp1 = agg.groupby(['day_cer','RES_Stimulus']) 
+#agg.head() to look at first five rows
+
+## split up treatment/control
+trt = {(k[0]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[1] == '1'} # get set of all treatments by date
+ctrl = {(k[0]): agg.kwh[v].values for k, v in grp1.groups.iteritems() if k[1] == 'E'} # get set of all controls by date
+keys = ctrl.keys()
+
+# tstats and pvals
+tstats = DataFrame([(k, np.abs(float(ttest_ind(trt[k], ctrl[k], equal_var=False)[0]))) for k in keys], columns=['day_cer', 'tstat'])
+pvals = DataFrame([(k, (ttest_ind(trt[k], ctrl[k], equal_var=False)[1])) for k in keys], columns=['day_cer', 'pval'])
+t_p = pd.merge(tstats, pvals)
+
+
+#Plotting!
+fig1 = plt.figure() # initialize plot
+ax1 = fig1.add_subplot(2,1,1) # two rows, one column, first plot
+ax1.plot(t_p['day_cer'],t_p['tstat'])
+ax1.axhline(2, color='r', linestyle='--')
+ax1.axvline(14, color='g', linestyle='--')
+ax1.set_title('t-stats over-time (daily)')
+
+ax2 = fig1.add_subplot(2,1,2) # two rows, one column, first plot
+ax2.plot(t_p['day_cer'], t_p['pval'])
+ax2.axhline(0.05, color='r', linestyle='--')
+ax2.axvline(14, color='g', linestyle='--')
+ax2.set_title('p-values over-time')
+plt.show()
