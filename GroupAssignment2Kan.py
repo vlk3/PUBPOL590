@@ -73,7 +73,7 @@ ax2 = fig1.add_subplot(2,1,2) # two rows, one column, first plot
 ax2.plot(t_p['day_cer'], t_p['pval'])
 ax2.axhline(0.05, color='r', linestyle='--')
 ax2.axvline(14, color='g', linestyle='--')
-ax2.set_title('p-values over-time (montly)')
+ax2.set_title('p-values over-time (daily)')
 plt.show()
 
 # MONTHLY AGGREGATION 
