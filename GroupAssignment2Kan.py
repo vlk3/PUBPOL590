@@ -66,13 +66,13 @@ fig1 = plt.figure() # initialize plot
 ax1 = fig1.add_subplot(2,1,1) # two rows, one column, first plot
 ax1.plot(t_p['day_cer'],t_p['tstat'])
 ax1.axhline(2, color='r', linestyle='--')
-ax1.axvline(14, color='g', linestyle='--')
+ax1.axvline(180, color='g', linestyle='--')
 ax1.set_title('t-stats over-time (daily)')
 
 ax2 = fig1.add_subplot(2,1,2) # two rows, one column, first plot
 ax2.plot(t_p['day_cer'], t_p['pval'])
 ax2.axhline(0.05, color='r', linestyle='--')
-ax2.axvline(14, color='g', linestyle='--')
+ax2.axvline(180, color='g', linestyle='--')
 ax2.set_title('p-values over-time (daily)')
 plt.show()
 
@@ -101,12 +101,12 @@ fig2 = plt.figure() # initialize plot
 ax3 = fig2.add_subplot(2,1,1) # two rows, one column, first plot
 ax3.plot(t_p1['tstat1'])
 ax3.axhline(2, color='r', linestyle='--')
-ax3.axvline(14, color='g', linestyle='--')
+ax3.axvline(6, color='g', linestyle='--')
 ax3.set_title('t-stats over-time (monthly)')
 
 ax4 = fig2.add_subplot(2,1,2) # two rows, one column, first plot
 ax4.plot(t_p1['pval1'])
 ax4.axhline(0.05, color='r', linestyle='--')
-ax4.axvline(14, color='g', linestyle='--')
+ax4.axvline(6, color='g', linestyle='--')
 ax4.set_title('p-values over-time (monthly')
 plt.show()
