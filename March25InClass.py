@@ -20,7 +20,7 @@ gd1 = grp1.groups
 
 #need to convert array to a list
 
-dfA1 = df[(df.stimulus == '1') & (df.stimulus == 
+dfA1 = df[(df.stimulus == '1') & (df.stimulus == ' 
 df.ID.values
 
 ## peek at key
