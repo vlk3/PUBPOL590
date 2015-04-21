@@ -42,6 +42,13 @@ df2 = df1.drop_duplicates(['ID', 'DAYHH']) #no dup observed
 df2 = df2[['ID', 'DAYHH', 'HH', 'kwh']] 
 df2.isnull()
 
+##Importing the SME and Residential allocation.csv
+df_allocation = pd.read_csv(root + "SME and Residential allocations.csv",usecols = ['ID','Code','Residential - Tariff allocation','Residential - stimulus allocation','SME allocation'],na_values = ['-', 'NA', 'NULL', '', '.'])
+df3 = df_allocation.rename(columns = {'Residential - Tariff allocation':'RES_Tariff','Residential - stimulus allocation':'RES_Stimulus', 'SME allocation':'SME'})
+grp1 = df.groupby(['RES_Tariff', 'RES_Stimulus', 'Code'])
+
+
+
 ## Finding DLS-affected data
 dls = df2[df2['HH'].isin([49, 50])]
         #this returns 2822 rows; meaning 2822 observations have hours 49 and 50 due to DLS
